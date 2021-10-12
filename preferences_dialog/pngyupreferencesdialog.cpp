@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileDialog>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include "pngyu_util.h"
 
@@ -226,7 +226,7 @@ void PngyuPreferencesDialog::pngquant_location_changed()
   const QString &path = pngyu::util::from_dot_path( combo_box->currentText() );
 
   QPalette palette = combo_box->palette();
-  if( pngyu::is_executable_pnqguant( path ) )
+  if( pngyu::is_executable_pnqguant(QFileInfo( path) ) )
   {
     palette.setBrush( QPalette::Text, QBrush() );
     combo_box->setToolTip( pngyu::pngquant_version(path) );
