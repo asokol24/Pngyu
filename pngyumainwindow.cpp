@@ -20,7 +20,7 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QFileDialog>
-#include <QDesktopWidget>
+// #include <QDesktopWidget>
 #include <QSettings>
 
 #include <QImageReader>
@@ -174,7 +174,7 @@ PngyuMainWindow::PngyuMainWindow(QWidget *parent) :
   update_file_table();
 
   { // set window size
-    const QPoint center_pos = QApplication::desktop()->geometry().center();
+    const QPoint center_pos = QGuiApplication::primaryScreen()->geometry().center();
     const QSize window_size( 500, 400 );
     setGeometry( QRect( center_pos - QPoint( window_size.width() / 2, window_size.height() / 2 ),
                         window_size ) );
@@ -219,7 +219,7 @@ void PngyuMainWindow::read_settings()
 
   const QString pngquant_path =
       pngyu::util::from_dot_path( settings.value( "pngquant_path", QString() ).toString() );
-  if( pngyu::is_executable_pnqguant(pngquant_path) )
+  if( pngyu::is_executable_pnqguant(QFileInfo(pngquant_path)) )
   {
     set_executable_pngquant_path( pngquant_path );
   }
@@ -1045,7 +1045,7 @@ bool PngyuMainWindow::is_other_output_directory_valid() const
 
 void PngyuMainWindow::exec_pushed()
 {
-  if( ! pngyu::is_executable_pnqguant(executable_pngquant_path()) )
+  if( ! pngyu::is_executable_pnqguant(QFileInfo(executable_pngquant_path())) )
   {
     QMessageBox::warning( this, "", "pngquant path is invalid" );
     menu_preferences_pushed();
@@ -1073,7 +1073,7 @@ void PngyuMainWindow::exec_pushed()
   const bool b_image_optim = false;
 #endif
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   execute_compress_all( b_image_optim );
   qDebug() << "execute" << t.elapsed() << "ms elapsed";
